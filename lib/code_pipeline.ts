@@ -13,7 +13,7 @@ export class PipelineStack extends Stack {
             // How it will be built and synthesized
             synth: new CodeBuildStep('Synth', {
                 // Where the source can be found
-                input: CodePipelineSource.gitHub('umeshtyagi829/cdk-pipeline-demo', 'master'),
+                input: CodePipelineSource.gitHub('umeshtyagi829/cdk-pipeline', 'master'),
 
                 // Install dependencies, build and run cdk synth
                 commands: [
