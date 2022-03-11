@@ -1,6 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, CodeBuildStep } from 'aws-cdk-lib/pipelines';
+import {PipelineStage} from './pipeline-stage';
 
 export class PipelineStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
@@ -22,6 +23,10 @@ export class PipelineStack extends Stack {
                     'npx cdk synth'
                 ],
             }),
+
+        
         });
+        const deploy = new PipelineStage(this, 'Deploy');
+        const deployStage = pipeline.addStage(deploy);
     }
 }
