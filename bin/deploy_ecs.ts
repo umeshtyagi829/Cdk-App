@@ -14,4 +14,4 @@ const app = new cdk.App();
 //   // env: { account: '123456789012', region: 'us-east-1' },
 // });
 
-new PipelineStack (app, 'CdkPipelineStack');
+new PipelineStack (app, 'PipelineStack');
