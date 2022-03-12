@@ -1,7 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, CodeBuildStep } from 'aws-cdk-lib/pipelines';
-import {PipelineStage} from './pipeline-stage';
+import { PipelineStage } from './pipeline-stage';
 
 export class PipelineStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
@@ -15,7 +15,10 @@ export class PipelineStack extends Stack {
             synth: new CodeBuildStep('Synth', {
                 // Where the source can be found
                 input: CodePipelineSource.gitHub('umeshtyagi829/cdk-pipeline', 'master'),
-
+                
+                installCommands: [
+                    'npm install -g aws-cdk'
+                ],
                 // Install dependencies, build and run cdk synth
                 commands: [
                     'npm ci',
