@@ -1,10 +1,11 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 
 export class DeployEcsStack extends Stack {
+  public readonly albDomainName: CfnOutput;
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
@@ -88,6 +89,10 @@ export class DeployEcsStack extends Stack {
 
     // add to a target group so make containers discoverable by the application load balancer
     service.attachToApplicationTargetGroup(targetGroupHttp);
+
+    this.albDomainName = new CfnOutput(this, 'ALBDomainName', {
+      value: alb.loadBalancerDnsName
+    });
 
   }
 }
