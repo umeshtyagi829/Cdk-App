@@ -31,19 +31,18 @@ export class PipelineStack extends Stack {
         const preprod = new PipelineStage(this, 'PreProd', {
         });
         const preprodStage = pipeline.addStage(preprod, {
-            post: [
-                new pipelines.ShellStep('TestService', {
-                    commands: [
-                        'curl -Ssf $ENDPOINT_URL',
-                    ],
-                    envFromCfnOutputs: {
-                        // Get the stack Output from the Stage and make it available in
-                        // the shell script as $ENDPOINT_URL.
-                        ENDPOINT_URL: preprod.albDomainName,
-                    },
-                }),
-
-            ],
+            // post: [
+            //     new pipelines.ShellStep('TestService', {
+            //         commands: [
+            //             'curl -Ssf $ENDPOINT_URL',
+            //         ],
+            //         envFromCfnOutputs: {
+            //             // Get the stack Output from the Stage and make it available in
+            //             // the shell script as $ENDPOINT_URL.
+            //             ENDPOINT_URL: preprod.albDomainName,
+            //         },
+            //     }),
+            // ],
         });
         const prod = new PipelineStage(this, 'Prod');
         pipeline.addStage(prod, {
