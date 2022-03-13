@@ -1,11 +1,15 @@
-import { DeployEcsStack } from './deploy_ecs-stack';
-import { Stage, StageProps } from 'aws-cdk-lib';
+import { Stage, StageProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { DeployEcsStack } from './deploy_ecs-stack';
 
 export class PipelineStage extends Stage {
+    public readonly albDomainName: CfnOutput;
+
     constructor(scope: Construct, id: string, props?: StageProps) {
         super(scope, id, props);
-        
-        new DeployEcsStack(this, 'WebService');
+
+        const service = new DeployEcsStack(this, 'WebService');
+        // Expose DeployEcsStack's output one level higher
+        this.albDomainName = service.albDomainName;
     }
 }
