@@ -13,6 +13,6 @@ export class PipelineStage extends Stage {
         // Expose DeployEcsStack's output one level higher
         this.albDomainName = ecs.albDomainName;
 
-        const dynamodb = new DynamoDbStack(this, 'DynaboDb');
+        const dynamodb = new DynamoDbStack(this, 'DynamoDB');
     }
 }
