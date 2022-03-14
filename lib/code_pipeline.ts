@@ -15,7 +15,7 @@ export class PipelineStack extends Stack {
             // How it will be built and synthesized
             synth: new pipelines.CodeBuildStep('Synth', {
                 // Where the source can be found
-                input: pipelines.CodePipelineSource.gitHub('umeshtyagi829/cdk-pipeline', 'master'),
+                input: pipelines.CodePipelineSource.gitHub('umeshtyagi829/cdk-pipeline', 'master') ,
 
                 installCommands: [
                     'npm install -g aws-cdk'
