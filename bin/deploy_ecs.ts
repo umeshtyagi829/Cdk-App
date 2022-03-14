@@ -5,7 +5,12 @@ import * as cdk from 'aws-cdk-lib';
 // import { DynamoDbStack } from '../lib/dynamodb';
 import  { PipelineStack } from '../lib/code_pipeline';
 
+
 const app = new cdk.App();
+
+new PipelineStack (app, 'PipelineStack', {
+});
+
 // new DeployEcsStack(app, 'DeployEcsStack', {
 //   // env: { account: '123456789012', region: 'us-east-1' },
 // });
@@ -14,4 +19,4 @@ const app = new cdk.App();
 //   // env: { account: '123456789012', region: 'us-east-1' },
 // });
 
-new PipelineStack (app, 'PipelineStack');
+

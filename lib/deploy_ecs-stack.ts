@@ -5,9 +5,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as apigwv2 from '@aws-cdk/aws-apigatewayv2-alpha'
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
-import { HttpAlbIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { config } from 'process';
-import { SubnetType } from 'aws-cdk-lib/aws-ec2';
+
 
 export class DeployEcsStack extends Stack {
   public readonly albDomainName: CfnOutput;
@@ -101,29 +99,29 @@ export class DeployEcsStack extends Stack {
       vpc,
       allowAllOutbound: true,
     });
-vpcLikSG.addIngressRule(
-     ec2.Peer.anyIpv4(),
-     ec2.Port.tcp(80),
-     "Allow http traffic"
-   );
-   
+    vpcLikSG.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(80),
+      "Allow http traffic"
+    );
+
     // Creating VPC Link  ( http vpc link)
     const httpVpcLink = new CfnResource(this, "HttpVpcLink", {
       type: "AWS::ApiGatewayV2::VpcLink",
       properties: {
-          Name: "myVPCLink",
-          SubnetIds: [vpc.selectSubnets({subnetType: SubnetType.PUBLIC}).subnetIds[0], vpc.selectSubnets({subnetType: SubnetType.PUBLIC}).subnetIds[1]],
-          SecurityGroupIds: [vpcLikSG.securityGroupId]
+        Name: "myVPCLink",
+        SubnetIds: [vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_WITH_NAT }).subnetIds[0], vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_WITH_NAT }).subnetIds[1]],
+        SecurityGroupIds: [vpcLikSG.securityGroupId]
 
-      }  
-  });
+      }
+    });
 
-   // Creating Api Gateway with HTTP API 
+    // Creating Api Gateway with HTTP API 
     const api = new apigwv2.HttpApi(this, "ApiGatewayHttpForBackOffice", {
       createDefaultStage: true,
-  });
+    });
 
-     // Adding HTTP API with ALB 
+    // Adding HTTP API with ALB 
     const integration = new apigw.CfnIntegration(this, "HttpApiGatewayIntegration", {
       apiId: api.httpApiId,
       connectionId: httpVpcLink.ref,
@@ -133,7 +131,7 @@ vpcLikSG.addIngressRule(
       integrationType: "HTTP_PROXY",
       integrationUri: listener.listenerArn,
       payloadFormatVersion: "1.0"
-  });
+    });
     //  Adding the API GW route method
 
     new apigw.CfnRoute(this, 'Route', {
