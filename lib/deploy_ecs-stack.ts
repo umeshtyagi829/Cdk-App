@@ -61,7 +61,7 @@ export class DeployEcsStack extends Stack {
 
     // ECS cluster
     const cluster = new ecs.Cluster(this, 'Cluster', { vpc });
-    
+
 
     const fargateTaskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
       memoryLimitMiB: 2048,
@@ -93,6 +93,29 @@ export class DeployEcsStack extends Stack {
     this.albDomainName = new CfnOutput(this, 'ALBDomainName', {
       value: alb.loadBalancerDnsName
     });
+    // const link = new apigateway.VpcLink(this, 'link', {
+    //   targets: [alb],
+    // });
+
+    // const integration = new apigateway.Integration({
+    //   type: apigateway.IntegrationType.HTTP_PROXY,
+    //   options: {
+    //     connectionType: apigateway.ConnectionType.VPC_LINK,
+    //     vpcLink: link,
+    //   },
+    // });
+
+    // const httpApi = new apigwv2.HttpApi(this, 'HttpApi');
+
+    // httpApi.addRoutes({
+    //   path: '/books',
+    //   methods: [apigwv2.HttpMethod.GET],
+    //   integration: booksIntegration,
+    // });
+
+    // const httpEndpoint = new apigwv2.HttpApi(this, 'HttpProxyPrivateApi', {
+    //   defaultIntegration: new HttpNlbIntegration('DefaultIntegration', listener),
+    // });
 
   }
 }
