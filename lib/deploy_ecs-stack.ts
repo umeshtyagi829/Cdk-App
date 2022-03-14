@@ -1,8 +1,13 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, CfnResource } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as apigwv2 from '@aws-cdk/aws-apigatewayv2-alpha'
+import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
+import { HttpAlbIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import { config } from 'process';
+import { SubnetType } from 'aws-cdk-lib/aws-ec2';
 
 export class DeployEcsStack extends Stack {
   public readonly albDomainName: CfnOutput;
@@ -93,29 +98,51 @@ export class DeployEcsStack extends Stack {
     this.albDomainName = new CfnOutput(this, 'ALBDomainName', {
       value: alb.loadBalancerDnsName
     });
-    // const link = new apigateway.VpcLink(this, 'link', {
-    //   targets: [alb],
-    // });
 
-    // const integration = new apigateway.Integration({
-    //   type: apigateway.IntegrationType.HTTP_PROXY,
-    //   options: {
-    //     connectionType: apigateway.ConnectionType.VPC_LINK,
-    //     vpcLink: link,
-    //   },
-    // });
+    const vpcLikSG = new ec2.SecurityGroup(this, "vpclink-SG", {
+      vpc,
+      allowAllOutbound: true,
+    });
+vpcLikSG.addIngressRule(
+     ec2.Peer.anyIpv4(),
+     ec2.Port.tcp(80),
+     "Allow http traffic"
+   );
+   
+    // Creating VPC Link  ( http vpc link)
+    const httpVpcLink = new CfnResource(this, "HttpVpcLink", {
+      type: "AWS::ApiGatewayV2::VpcLink",
+      properties: {
+          Name: "myVPCLink",
+          SubnetIds: [vpc.selectSubnets({subnetType: SubnetType.PUBLIC}).subnetIds[0], vpc.selectSubnets({subnetType: SubnetType.PUBLIC}).subnetIds[1]],
+          SecurityGroupIds: [vpcLikSG.securityGroupId]
 
-    // const httpApi = new apigwv2.HttpApi(this, 'HttpApi');
+      }  
+  });
 
-    // httpApi.addRoutes({
-    //   path: '/books',
-    //   methods: [apigwv2.HttpMethod.GET],
-    //   integration: booksIntegration,
-    // });
+   // Creating Api Gateway with HTTP API 
+    const api = new apigwv2.HttpApi(this, "ApiGatewayHttpForBackOffice", {
+      createDefaultStage: true,
+  });
 
-    // const httpEndpoint = new apigwv2.HttpApi(this, 'HttpProxyPrivateApi', {
-    //   defaultIntegration: new HttpNlbIntegration('DefaultIntegration', listener),
-    // });
+     // Adding HTTP API with ALB 
+    const integration = new apigw.CfnIntegration(this, "HttpApiGatewayIntegration", {
+      apiId: api.httpApiId,
+      connectionId: httpVpcLink.ref,
+      connectionType: "VPC_LINK",
+      description: "API Integration",
+      integrationMethod: "ANY",
+      integrationType: "HTTP_PROXY",
+      integrationUri: listener.listenerArn,
+      payloadFormatVersion: "1.0"
+  });
+    //  Adding the API GW route method
+
+    new apigw.CfnRoute(this, 'Route', {
+      apiId: api.httpApiId,
+      routeKey: 'ANY /{proxy+}',
+      target: `integrations/${integration.ref}`,
+    });
 
   }
 }
