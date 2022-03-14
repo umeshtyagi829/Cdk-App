@@ -11,6 +11,8 @@ import { SubnetType } from 'aws-cdk-lib/aws-ec2';
 
 export class DeployEcsStack extends Stack {
   public readonly albDomainName: CfnOutput;
+  public readonly ApiEndpoint: CfnOutput;
+
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
@@ -95,10 +97,6 @@ export class DeployEcsStack extends Stack {
     // add to a target group so make containers discoverable by the application load balancer
     service.attachToApplicationTargetGroup(targetGroupHttp);
 
-    this.albDomainName = new CfnOutput(this, 'ALBDomainName', {
-      value: alb.loadBalancerDnsName
-    });
-
     const vpcLikSG = new ec2.SecurityGroup(this, "vpclink-SG", {
       vpc,
       allowAllOutbound: true,
@@ -142,6 +140,14 @@ vpcLikSG.addIngressRule(
       apiId: api.httpApiId,
       routeKey: 'ANY /{proxy+}',
       target: `integrations/${integration.ref}`,
+    });
+
+    this.albDomainName = new CfnOutput(this, 'ALBDomainName', {
+      value: alb.loadBalancerDnsName
+    });
+
+    this.ApiEndpoint = new CfnOutput(this, 'ApiEndpoint', {
+      value: api.apiEndpoint
     });
 
   }
