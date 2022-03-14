@@ -28,7 +28,9 @@ export class PipelineStack extends Stack {
                 ],
             }),
         });
-        const preprod = new PipelineStage(this, 'PreProd');
+        const preprod = new PipelineStage(this, 'PreProd', {
+            env: { account: '945515415056', region: 'us-east-1' }
+        });
         const preprodStage = pipeline.addStage(preprod, {
             post: [
                 new pipelines.ShellStep('TestService', {
@@ -43,11 +45,13 @@ export class PipelineStack extends Stack {
                 }),
             ],
         });
-        // const prod = new PipelineStage(this, 'Prod');
-        // pipeline.addStage(prod, {
-        //     pre: [
-        //         new pipelines.ManualApprovalStep('PromoteToProd'),
-        //     ],
-        // });
+        const prod = new PipelineStage(this, 'Prod', {
+            env: { account: '945515415056', region: 'us-east-2' }
+        });
+        pipeline.addStage(prod, {
+            pre: [
+                new pipelines.ManualApprovalStep('PromoteToProd'),
+            ],
+        });
     }
 }

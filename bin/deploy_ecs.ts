@@ -6,9 +6,15 @@ import * as cdk from 'aws-cdk-lib';
 import  { PipelineStack } from '../lib/code_pipeline';
 
 
+const envUSEast1 = {
+  'account': '945515415056',
+  'region': 'us-east-1',
+}
+
 const app = new cdk.App();
 
 new PipelineStack (app, 'PipelineStack', {
+  env: envUSEast1
 });
 
 // new DeployEcsStack(app, 'DeployEcsStack', {
