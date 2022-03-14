@@ -19,13 +19,6 @@ export class PipelineStage extends Stage {
         this.albDomainName = ecs.albDomainName;
         this.ApiEndpoint = ecs.ApiEndpoint;
 
-        const ecsregion2 = new DeployEcsStack(this, 'EcsCluster2', {
-        });
-
-        // Expose DeployEcsStack's output one level higher
-        this.albDomainName = ecs.albDomainName;
-        this.ApiEndpoint = ecs.ApiEndpoint;
-
         // const dynamodb = new DynamoDbStack(this, 'DynamoDB');
     }
 }
