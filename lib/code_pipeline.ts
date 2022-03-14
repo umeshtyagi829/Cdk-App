@@ -28,8 +28,7 @@ export class PipelineStack extends Stack {
                 ],
             }),
         });
-        const preprod = new PipelineStage(this, 'PreProd', {
-        });
+        const preprod = new PipelineStage(this, 'PreProd');
         const preprodStage = pipeline.addStage(preprod, {
             // post: [
             //     new pipelines.ShellStep('TestService', {
@@ -44,11 +43,11 @@ export class PipelineStack extends Stack {
             //     }),
             // ],
         });
-        const prod = new PipelineStage(this, 'Prod');
-        pipeline.addStage(prod, {
-            pre: [
-                new pipelines.ManualApprovalStep('PromoteToProd'),
-            ],
-        });
+        // const prod = new PipelineStage(this, 'Prod');
+        // pipeline.addStage(prod, {
+        //     pre: [
+        //         new pipelines.ManualApprovalStep('PromoteToProd'),
+        //     ],
+        // });
     }
 }
