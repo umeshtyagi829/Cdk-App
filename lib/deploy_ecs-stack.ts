@@ -13,9 +13,16 @@ export class DeployEcsStack extends Stack {
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+    
+    const ENV_NAME = this.node.tryGetContext('ENV_NAME');
+
+    /* Stack-specific variables */
+    const PREFIX = `${ENV_NAME}-POC`;
+
+    const vpc_name = this.node.tryGetContext('VPC_NAME');
 
     // The code that defines your stack goes here
-    const vpc = new ec2.Vpc(this, 'MyVpc', { maxAzs: 2 });
+    const vpc = new ec2.Vpc(this, `${PREFIX}-${vpc_name}`, { maxAzs: 2 });
 
     // use a security group to provide a secure connection between the ALB and the containers
     const albSG = new ec2.SecurityGroup(this, "alb-SG", {
@@ -30,7 +37,7 @@ export class DeployEcsStack extends Stack {
     );
 
     // Application load balancer
-    const alb = new elbv2.ApplicationLoadBalancer(this, `alb`, {
+    const alb = new elbv2.ApplicationLoadBalancer(this, `${PREFIX}-ALB`, {
       vpc,
       vpcSubnets: { subnets: vpc.privateSubnets },
       internetFacing: false,
@@ -40,7 +47,7 @@ export class DeployEcsStack extends Stack {
     alb.addSecurityGroup(albSG);
 
     // Target group to make resources containers dicoverable by the application load balancer
-    const targetGroupHttp = new elbv2.ApplicationTargetGroup(this, "target-group", {
+    const targetGroupHttp = new elbv2.ApplicationTargetGroup(this, `${PREFIX}-target-group`, {
       port: 80,
       vpc,
       protocol: elbv2.ApplicationProtocol.HTTP,
@@ -65,7 +72,7 @@ export class DeployEcsStack extends Stack {
     });
 
     // ECS cluster
-    const cluster = new ecs.Cluster(this, 'Cluster', { vpc });
+    const cluster = new ecs.Cluster(this, `${PREFIX}-Cluster`, { vpc });
 
 
     const fargateTaskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
@@ -84,7 +91,7 @@ export class DeployEcsStack extends Stack {
     container.addPortMappings({ containerPort: 80 });
 
     // Create a service and associate it with the load balancer
-    const service = new ecs.FargateService(this, 'Service', {
+    const service = new ecs.FargateService(this, `${PREFIX}-Service`, {
       serviceName: 'nginx-service',
       cluster,
       taskDefinition: fargateTaskDefinition,
@@ -95,7 +102,7 @@ export class DeployEcsStack extends Stack {
     // add to a target group so make containers discoverable by the application load balancer
     service.attachToApplicationTargetGroup(targetGroupHttp);
 
-    const vpcLikSG = new ec2.SecurityGroup(this, "vpclink-SG", {
+    const vpcLikSG = new ec2.SecurityGroup(this, `${PREFIX}-vpclink-SG`, {
       vpc,
       allowAllOutbound: true,
     });

@@ -29,7 +29,7 @@ export class PipelineStack extends Stack {
             }),
         });
         const preprod = new PipelineStage(this, 'PreProd', {
-            env: { account: '945515415056', region: 'us-east-1' }
+            // env: { account: '945515415056', region: 'us-east-1' }
         });
         const preprodStage = pipeline.addStage(preprod, {
             post: [
@@ -46,7 +46,7 @@ export class PipelineStack extends Stack {
             ],
         });
         const prod = new PipelineStage(this, 'Prod', {
-            env: { account: '945515415056', region: 'us-east-2' }
+            // env: { account: '945515415056', region: 'us-east-1' }
         });
         pipeline.addStage(prod, {
             pre: [
