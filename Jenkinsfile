@@ -53,7 +53,7 @@ pipeline {
         // destroying the aws cdk app
         stage('Destroy') {
             steps {
-                sh 'npx cdk destroy --require-approval=never'
+                sh 'npx cdk destroy --force'
             }
         }
     }     
