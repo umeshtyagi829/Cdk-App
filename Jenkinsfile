@@ -42,7 +42,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'cdk deploy'
+                sh 'cdk deploy --require-approval=never'
             }
         }
     }     
