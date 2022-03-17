@@ -5,7 +5,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "node"
+        tool name: 'NodeJS', type: 'nodejs'
     }
     
     environment {
