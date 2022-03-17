@@ -32,6 +32,13 @@ pipeline {
             }
         }
 
+        stage('Bootstrap') {
+            steps {
+                sh 'npx cdk bootstrap'
+
+            }
+        }
+
         stage('Build') {
             steps {  
                 sh 'npm ci'
@@ -42,7 +49,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'cdk deploy --require-approval=never'
+                sh 'npx cdk deploy --require-approval=never'
             }
         }
     }     
