@@ -17,9 +17,9 @@ new PipelineStack (app, 'PipelineStack', {
   // env: envUSEast1
 });
 
-new DeployEcsStack(app, 'DeployEcsStack', {
-  // env: { account: '123456789012', region: 'us-east-1' },
-});
+// new DeployEcsStack(app, 'DeployEcsStack', {
+//   // env: { account: '123456789012', region: 'us-east-1' },
+// });
 
 // new DynamoDbStack(app, 'DynamoDbStack', {
 //   // env: { account: '123456789012', region: 'us-east-1' },

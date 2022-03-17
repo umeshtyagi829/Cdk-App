@@ -15,14 +15,12 @@ export class DeployEcsStack extends Stack {
     super(scope, id, props);
     
     const ENV_NAME = this.node.tryGetContext('ENV_NAME');
-
-    /* Stack-specific variables */
+    const VPC_NAME = this.node.tryGetContext('VPC_NAME');
     const PREFIX = `${ENV_NAME}-POC`;
 
-    const vpc_name = this.node.tryGetContext('VPC_NAME');
 
     // The code that defines your stack goes here
-    const vpc = new ec2.Vpc(this, `${PREFIX}-${vpc_name}`, { maxAzs: 2 });
+    const vpc = new ec2.Vpc(this, `${PREFIX}-${VPC_NAME}`, { maxAzs: 2 });
 
     // use a security group to provide a secure connection between the ALB and the containers
     const albSG = new ec2.SecurityGroup(this, "alb-SG", {
