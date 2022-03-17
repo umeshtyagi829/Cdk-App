@@ -1,14 +1,23 @@
 
+def awsCredentials = [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws_sandbox']]
+
 pipeline {
     agent any
 
-    tools {nodejs "node"}
+    tools {
+        nodejs "node"
+    }
     
     environment {
-        // AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        // AWS_SECRET_ACCESS_KEY = ('AWS_SECRET_ACCESS_KEY')
-        // AWS_SESSION_TOKEN= ('AWS_SESSION_TOKEN')  
-        }
+         AWS_REGION = 'us-east-1'
+    }
+
+    options {
+        disableConcurrentBuilds()
+        parallelsAlwaysFailFast()
+        timestamps()
+        withCredentials(awsCredentials)
+    }   
     stages {
         stage('Checkout') {
             steps {
@@ -18,15 +27,16 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm install -g aws-cdk'
+                sh 'npm install -g aws-cdk typescript'
+
             }
         }
 
         stage('Build') {
             steps {  
-                    'npm ci'
-                    'npm run build'
-                    'npx cdk synth -c VPC_NAME=VPC -c ENV_NAME=DEV'
+                sh 'npm ci'
+                sh 'npm run build'
+                sh 'npx cdk synth -c VPC_NAME=VPC -c ENV_NAME=DEV'
             }
         }    
 
@@ -37,3 +47,5 @@ pipeline {
         }
     }     
 }
+
+
