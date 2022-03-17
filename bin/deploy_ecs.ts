@@ -3,7 +3,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { DeployEcsStack } from '../lib/deploy_ecs-stack';
 // import { DynamoDbStack } from '../lib/dynamodb';
-import  { PipelineStack } from '../lib/code_pipeline';
+// import  { PipelineStack } from '../lib/code_pipeline';
 
 
 // const envUSEast1 = {
