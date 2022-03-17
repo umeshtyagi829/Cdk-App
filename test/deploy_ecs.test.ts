@@ -1,17 +1,22 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as DeployEcs from '../lib/deploy_ecs-stack';
+import * as cdk from 'aws-cdk-lib';
+import { Capture, Match, Template } from 'aws-cdk-lib/assertions';
+import * as DeployEcs from '../lib/deploy_ecs-stack';
 
 // example test. To run these tests, uncomment this file along with the
 // example resource in lib/deploy_ecs-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new DeployEcs.DeployEcsStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+
+test('Cluster Created', () => {
+    const ENV_NAME = 'DEV';
+    const PREFIX = `${ENV_NAME}-POC`;
+    
+  const app = new cdk.App();
+    // WHEN
+  const stack = new DeployEcs.DeployEcsStack(app, 'MyTestStack');
+    // THEN
+  const template = Template.fromStack(stack);
+
+  template.hasResourceProperties('AWS::ECS::Cluster', {
+    ClusterName: `${PREFIX}-Cluster`
+  });
 });

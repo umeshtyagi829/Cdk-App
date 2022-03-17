@@ -6,6 +6,8 @@ import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as apigwv2 from '@aws-cdk/aws-apigatewayv2-alpha'
 import * as apigw from "aws-cdk-lib/aws-apigatewayv2"
 
+// Variables
+const cidr = '10.0.0.0/16';
 
 export class DeployEcsStack extends Stack {
   public readonly albDomainName: CfnOutput;
@@ -20,7 +22,10 @@ export class DeployEcsStack extends Stack {
 
 
     // The code that defines your stack goes here
-    const vpc = new ec2.Vpc(this, `${PREFIX}-${VPC_NAME}`, { maxAzs: 2 });
+    const vpc = new ec2.Vpc(this, `${PREFIX}-${VPC_NAME}`, {
+      maxAzs: 2,
+      cidr: cidr, 
+    });
 
     // use a security group to provide a secure connection between the ALB and the containers
     const albSG = new ec2.SecurityGroup(this, "alb-SG", {
