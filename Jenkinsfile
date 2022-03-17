@@ -23,8 +23,8 @@ pipeline {
 
         stage('Build') {
             steps {  
-                    'npm ci',
-                    'npm run build',
+                    'npm ci'
+                    'npm run build'
                     'npx cdk synth -c VPC_NAME=VPC -c ENV_NAME=DEV'
             }
         }    
