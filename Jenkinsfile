@@ -4,9 +4,9 @@ def awsCredentials = [[$class: 'AmazonWebServicesCredentialsBinding', credential
 pipeline {
     agent any
 
-    // tools {
-    //     nodejs "node"
-    // }
+    tools {
+        nodejs "NodeJS"
+    }
     
     environment {
          AWS_REGION = 'us-east-1'
