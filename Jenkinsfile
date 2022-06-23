@@ -1,3 +1,12 @@
+#!/usr/bin/env groovy
+package com.terradatum.jenkins.workflow
+
+import com.cloudbees.groovy.cps.NonCPS
+import groovy.json.JsonSlurper
+import groovy.json.internal.LazyMap
+import groovy.util.slurpersupport.NodeChild
+import hudson.model.Build
+import jenkins.model.Jenkins
 
 // retriving the AWS credentila from the jenkins credential
 def awsCredentials = [[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws_sandbox']]
