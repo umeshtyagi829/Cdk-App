@@ -20,6 +20,7 @@ pipeline {
     // setting up aws region
     environment {
          AWS_REGION = 'us-east-1'
+         BRANCH_NAME = 'master'
     }
     // setting up the aws credentials
     options {
@@ -59,23 +60,9 @@ pipeline {
         //     }
         // }
 
-        // // destroying the aws cdk app
-        // stage('Destroy') {
-        //     steps {
-        //         sh 'npx cdk destroy --force'
-        //     }
-        // }
-
         stage('Git Tag') {
             steps {
                 sh 'bash git_tag.sh'
-            }
-        }
-
-        // destroying the aws cdk app
-        stage('Destroy') {
-            steps {
-                sh 'npx cdk destroy --force'
             }
         }
 
