@@ -64,6 +64,7 @@ post {
      always {
         gitTag("2", "2.1")
     }
+}
 
 void gitTag(Version releaseVersion) {
       sshagent(['devops_deploy_DEV']) {
