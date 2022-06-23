@@ -62,7 +62,12 @@ pipeline {
 
         stage('Git Tag') {
             steps {
-                sh 'bash git_tag.sh'
+                cd ${WORKSPACE}/resource
+                sh(script: '''
+                git config --global user.email "umeshtyagi829@gmail.com"
+                git config --global user.name "umeshtyagi829"
+                bash git_tag.sh
+                ''', label: 'Git Tag')
             }
         }
 
