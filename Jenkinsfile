@@ -66,21 +66,21 @@ pipeline {
         //     }
         // }
 
-        
+        stage('Git Tag') {
+            steps {
+                sh 'bash git_tag.sh'
+            }
+        }
+
+        // destroying the aws cdk app
+        stage('Destroy') {
+            steps {
+                sh 'npx cdk destroy --force'
+            }
+        }
+
     }     
 }
-post {
-     always {
-        gitTag("2", "2.1")
-    }
-}
 
-void gitTag(Version releaseVersion) {
-      sshagent(['devops_deploy_DEV']) {
-        shell 'git tag -d \$(git tag)'
-        shell 'git fetch --tags'
-        echo "New release version ${releaseVersion.normalVersion}"
-        shell "git tag -fa ${releaseVersion.normalVersion} -m 'Release version ${releaseVersion.normalVersion}'"
-      }
-    }
+
 
