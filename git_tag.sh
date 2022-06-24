@@ -3,6 +3,7 @@ major_max=1;
 minor_max=0;
 patch_max=0;
 branch_name="${BRANCH_NAME}"
+# branch_name="master"
 echo "Creating tag for branch $BRANCH_NAME"
 if [ -z "$BRANCH_NAME" ]; then
     echo 'BRANCH_NAME not provided'
